@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        table {
+            border-collapse: collapse;
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even){background-color: #f2f2f2}
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Elastic search first demo example</h1>
+    <form action="#" th:action="@{/product-service/search}" method="post">
+        <b>Search products</b>
+        <input type="text" name="name" id="name"/>
+        <input type="submit" value="Search products"/>
+    </form>
+    <br/><br/>
+    <div th:if="${not #lists.isEmpty(products)}">
+        <table>
+            <thead>
+                <th>Name</th>
+                <th>Price</th>
+                <th>In stock</th>
+                <th>Description</th>
+            </thead>
+            <tbody>
+                <tr th:each="product : ${products}">
+                    <td><span th:text="${product.name}"> Title </span></td>
+                    <td><span th:text="${product.price}"> Price </span></td>
+                    <td><span th:text="${product.inStock}"> In stock </span></td>
+                    <td><span th:text="${product.description}"> Description </span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
