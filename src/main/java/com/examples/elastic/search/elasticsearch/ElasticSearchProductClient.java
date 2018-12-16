@@ -12,9 +12,6 @@ import org.elasticsearch.script.mustache.SearchTemplateRequest;
 import org.elasticsearch.script.mustache.SearchTemplateResponse;
 import org.elasticsearch.search.SearchHit;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -46,14 +43,14 @@ public class ElasticSearchProductClient {
     }
 
     public List<Product> getProductsByName(String productName) throws IOException {
-        SearchTemplateRequest searchTemplateRequest = new SearchTemplateRequest();
-        searchTemplateRequest.setRequest(new SearchRequest(PRODUCTS_INDEX));
-        searchTemplateRequest.setScriptType(ScriptType.INLINE);
-        searchTemplateRequest.setScript(ElasticSearchUtil.productsByNameQuery());
-
         Map<String, Object> scriptParams = new HashMap<>();
         scriptParams.put(SCRIPT_PARAM_NAME, productName);
+
+        SearchTemplateRequest searchTemplateRequest = new SearchTemplateRequest();
+        searchTemplateRequest.setScript("search_products_by_name");
+        searchTemplateRequest.setScriptType(ScriptType.STORED);
         searchTemplateRequest.setScriptParams(scriptParams);
+        searchTemplateRequest.setRequest(new SearchRequest(PRODUCTS_INDEX));
 
         SearchTemplateResponse searchResponse = restHighLevelClient.searchTemplate(searchTemplateRequest, RequestOptions.DEFAULT);
 
